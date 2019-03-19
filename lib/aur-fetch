@@ -13,10 +13,15 @@ usage() {
 ICAgICAgICAgICAgIC4tLX5+LF9fCjotLi4uLiwtLS0tLS0tYH5+Jy5fLicKIGAtLCwsICAs
 XyAgICAgIDsnflUnCiAgXywtJyAsJ2AtX187ICctLS4KIChfLyd+fiAgICAgICcnJycoOwoK
 !
-    printf 'usage: fetch [-L directory] [-rv] pkgname...\n'
+    plain "usage: $argv0 [-L directory] [-rv] pkgname..."
 }
 
+source /usr/share/makepkg/util/message.sh
 source /usr/share/makepkg/util/parseopts.sh
+
+if [[ -t 2 && ! -o xtrace ]]; then
+    colorize
+fi
 
 opt_short='rvL:'
 opt_long=('recurse' 'verbose' 'write-log:' 'force')
@@ -43,12 +48,12 @@ while true; do
 done
 
 if [[ -v $log_dir ]] && [[ ! -d $log_dir ]]; then
-    printf 'fetch: %s: Not a directory\n' "$log_dir" >&2
-    exit 1
+    error "$argv0: $log_dir: Not a directory"
+    exit 20
 fi
 
 if ! (( $# )); then
-    printf 'fetch: No pkgname given\n' >&2
+    error "$argv0: No pkgname given"
     exit 1
 fi
 
@@ -81,7 +86,7 @@ fi | while read -r pkg; do
 
             if [[ $log_dir ]]; then
                 git --no-pager log --patch --stat '..@{upstream}' > "$log_dir/$pkg".patch
-                printf '%s/%s.patch\n' "$log_dir" "$GIT_DIR"
+                printf '%s/%s.patch\n' "$log_dir" "$GIT_WORK_TREE"
             fi
 
             # Discard any local changes. (#349)
@@ -94,7 +99,7 @@ fi | while read -r pkg; do
             # only allow fast-forward fetches. (#)
             git -C "$pkg" config remote.origin.fetch 'refs/heads/*:refs/remotes/origin/*'
         else
-            printf 'fetch: %s: Failed to clone repository\n' "$pkg" >&2
+            error "$argv0: $pkg: Failed to clone repository"
             exit 1
         fi
     fi
