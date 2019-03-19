@@ -7,6 +7,7 @@
   + add `--host-conf` (experimental)
 * `aur-fetch`
   + do not print diffs to `stdout` unless `--verbose` is specified
+  + git orderfile is now stored in `$XDG_CONFIG_HOME/aurutils/fetch/orderfile`
   + remove support for `tar` archives
   + rename `--log-dir` to `--write-log`
 * `aur-repo-filter`
@@ -14,6 +15,9 @@
 * `aur-repo`
   + add `--pacman-conf`
   + remove `expac` dependency
+* `aur-sync`
+  + add default ignore file in `$XDG_CONFIG_HOME/aurutils/sync/ignore`
+  + remove `AURDEST_SNAPSHOT`, `--git`, `--tar`
 * `aur.1`
   + add example `aur-gc`, `aur-remove` scripts
 * `Makefile`
